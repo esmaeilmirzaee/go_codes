@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 )
 
 type link string
@@ -42,11 +43,15 @@ func main() {
 		default:
 			break
 		}
-		go l.checkLink(c)
+		go func(l link) {
+			time.Sleep(5 * time.Second)
+			l.checkLink(c)
+		}(l)
 	}
 }
 
 func (l link) checkLink(c chan link) {
+
 	_, err := http.Get(string(l))
 	if err != nil {
 		fmt.Println("Problem--", l)
